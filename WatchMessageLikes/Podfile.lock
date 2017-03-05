@@ -1,0 +1,12 @@
+PODS:
+  - NextGrowingTextView (0.8.1)
+
+DEPENDENCIES:
+  - NextGrowingTextView
+
+SPEC CHECKSUMS:
+  NextGrowingTextView: 1bcad444e3f8855b3297bb423e5248cf273aaf4a
+
+PODFILE CHECKSUM: d52c4528d6a807405e9e6841c35b26593718bbc0
+
+COCOAPODS: 1.2.0.beta.1
