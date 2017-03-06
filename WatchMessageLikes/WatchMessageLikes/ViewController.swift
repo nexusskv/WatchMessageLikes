@@ -11,13 +11,22 @@ import WatchConnectivity
 import NextGrowingTextView
 
 
+public enum MessageAction: Int {
+    case add
+    case edit
+    case delete
+}
+
+
 class ViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var inputContainerView: UIView!
     @IBOutlet weak var inputContainerViewBottom: NSLayoutConstraint!
     @IBOutlet weak var growingTextView: NextGrowingTextView!
     @IBOutlet var messagesTable: UITableView!
     var messagesArray: [Dictionary<String, AnyObject>] = []
-    private let session: WCSession? = WCSession.isSupported() ? WCSession.default() : nil
+    var selectedIndex: Int = -1
+    let session: WCSession? = WCSession.isSupported() ? WCSession.default() : nil
+    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -52,7 +61,7 @@ class ViewController: UIViewController, UITextViewDelegate {
         self.view.endEditing(true)
     }
     
-    @IBAction func handleAddButton(_ sender: AnyObject) {
+    @IBAction func handleAddButton() {
         self.inputContainerView.isHidden = false
         
         _ = self.growingTextView.becomeFirstResponder()
@@ -66,25 +75,38 @@ class ViewController: UIViewController, UITextViewDelegate {
     }
     
     @IBAction func handleSendButton(_ sender: AnyObject) {
-        let messageValues = ["message": self.growingTextView.text as String,
-                             "count": 0 as Int] as [String : Any]
+        var messageValues = ["message": self.growingTextView.text as String] as [String : Any]
         
-        self.messagesArray.append(messageValues as [String : AnyObject])
+        var watchListAction: Int = MessageAction.add.rawValue
         
-        let applicationData = ["message" : self.growingTextView.text]
-        // The paired iPhone has to be connected via Bluetooth.
-        if let session = session, session.isReachable {
-            session.sendMessage(applicationData, replyHandler: nil, errorHandler: { error in
-                // Handle any errors here
-                print(error)
-            });
+        var watchData: [String : Any] = [:]
+        
+        if self.selectedIndex >= 0 {
+            let currentCount = self.messagesArray[self.selectedIndex]["count"] as! Int
+            messageValues["count"] = currentCount
+            
+            self.messagesArray[self.selectedIndex] = messageValues as [String : AnyObject]
+            watchListAction = MessageAction.edit.rawValue
+            
+            watchData["index"] = self.selectedIndex
+            
+        } else {
+            messageValues["count"] = 0
+            self.messagesArray.append(messageValues as [String : AnyObject])
         }
+
+        watchData["message"] = self.growingTextView.text
+        watchData["action"]  = watchListAction
+        
+        self.sendToWatch(data: watchData)
         
         self.inputContainerView.isHidden = true
         self.growingTextView.text = ""
         self.view.endEditing(true)
         
         self.messagesTable.reloadData()
+        
+        self.selectedIndex = -1
     }
     
     func keyboardWillHide(_ sender: Notification) {
@@ -108,6 +130,12 @@ class ViewController: UIViewController, UITextViewDelegate {
             }
         }
     }
+    
+    func getMessage(index: Int) -> String {
+        let messageParams = self.messagesArray[index]
+        
+        return (messageParams["message"] as! String?)!
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -117,6 +145,16 @@ class ViewController: UIViewController, UITextViewDelegate {
 
 
 extension ViewController: WCSessionDelegate {
+    
+    func sendToWatch(data: Dictionary<String, Any>) {
+        // The paired iPhone has to be connected via Bluetooth.
+        if let session = session, session.isReachable {
+            session.sendMessage(data, replyHandler: nil, errorHandler: { error in
+                // Handle any errors here
+                print(error)
+            });
+        }
+    }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         //Dispatch to main thread to update the UI instantaneously (otherwise, takes a little while)
@@ -150,15 +188,43 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellIdentifier = "MessageViewCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier) as! MessageCell
-        
-        let messageParams = self.messagesArray[indexPath.row]
 
-        cell.messageLabel?.text = messageParams["message"] as! String?
+        cell.messageLabel?.text = getMessage(index: indexPath.row)
         
-        let count: Int = messageParams["count"] as! Int
+        let count: Int = self.messagesArray[indexPath.row]["count"] as! Int
         cell.countLabel?.text = String(describing: count)
         
         return cell        
     }
 }
 
+extension ViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let selectedMessage = getMessage(index: indexPath.row)
+        self.growingTextView.text = selectedMessage
+        
+        self.selectedIndex = indexPath.row
+        
+        handleAddButton()
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            self.messagesArray.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath as IndexPath], with: .left)
+            
+            let watchData = ["action" : MessageAction.delete.rawValue,
+                             "index" : indexPath.row] as [String : Any]
+            self.sendToWatch(data: watchData)
+            
+            self.messagesTable.reloadData()
+        }
+    }
+    
+    private func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+}

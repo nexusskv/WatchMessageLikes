@@ -29,7 +29,7 @@
         <!--Messages list-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="WatchKitTestProject" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="WatchMessageLikes" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -42,7 +42,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MessageViewCell" rowHeight="60" id="2Zs-CG-7Vg" customClass="MessageCell" customModule="WatchKitTestProject" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MessageViewCell" rowHeight="60" id="2Zs-CG-7Vg" customClass="MessageCell" customModule="WatchMessageLikes" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2Zs-CG-7Vg" id="JWg-ls-REe">
@@ -87,14 +87,14 @@
                                 </connections>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7kE-ac-lPl">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="615" width="375" height="52"/>
                                 <subviews>
                                     <view clipsSubviews="YES" contentMode="scaleToFill" placeholderIntrinsicWidth="300" placeholderIntrinsicHeight="36" translatesAutoresizingMaskIntoConstraints="NO" id="fMx-0F-rPS" customClass="NextGrowingTextView" customModule="NextGrowingTextView">
-                                        <rect key="frame" x="8" y="4" width="314" height="36"/>
+                                        <rect key="frame" x="8" y="8" width="314" height="36"/>
                                         <color key="backgroundColor" red="0.94797950980000001" green="0.94797950980000001" blue="0.94797950980000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     </view>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7br-a5-2Vh">
-                                        <rect key="frame" x="329" y="4" width="38" height="36"/>
+                                        <rect key="frame" x="329" y="8" width="38" height="36"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="36" id="nxf-nb-lDn"/>
                                         </constraints>
@@ -107,16 +107,14 @@
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstItem="fMx-0F-rPS" firstAttribute="top" secondItem="7kE-ac-lPl" secondAttribute="top" constant="4" id="2hW-md-fiB"/>
                                     <constraint firstItem="fMx-0F-rPS" firstAttribute="leading" secondItem="7kE-ac-lPl" secondAttribute="leading" constant="8" id="4X0-ve-bno"/>
                                     <constraint firstAttribute="trailing" secondItem="7br-a5-2Vh" secondAttribute="trailing" constant="8" id="65k-qE-k3e"/>
                                     <constraint firstItem="fMx-0F-rPS" firstAttribute="leading" secondItem="7kE-ac-lPl" secondAttribute="leading" constant="8" id="CXL-Pu-arn"/>
-                                    <constraint firstAttribute="bottom" secondItem="7br-a5-2Vh" secondAttribute="bottom" constant="4" id="H5R-Xs-MH4"/>
-                                    <constraint firstAttribute="bottom" secondItem="fMx-0F-rPS" secondAttribute="bottom" constant="4" id="Isp-Dg-gy6"/>
+                                    <constraint firstItem="7br-a5-2Vh" firstAttribute="centerY" secondItem="7kE-ac-lPl" secondAttribute="centerY" id="N2i-Yo-3Oz"/>
                                     <constraint firstAttribute="trailing" secondItem="7br-a5-2Vh" secondAttribute="trailing" constant="8" id="SHt-9s-wli"/>
+                                    <constraint firstItem="fMx-0F-rPS" firstAttribute="centerY" secondItem="7kE-ac-lPl" secondAttribute="centerY" id="e0N-4U-c6I"/>
                                     <constraint firstItem="7br-a5-2Vh" firstAttribute="leading" secondItem="fMx-0F-rPS" secondAttribute="trailing" constant="7" id="e5D-j7-UKu"/>
-                                    <constraint firstItem="7br-a5-2Vh" firstAttribute="leading" secondItem="fMx-0F-rPS" secondAttribute="trailing" constant="7" id="nyY-56-7ep"/>
-                                    <constraint firstAttribute="bottom" secondItem="7br-a5-2Vh" secondAttribute="bottom" constant="4" id="sA6-4k-fK2"/>
+                                    <constraint firstAttribute="bottom" secondItem="7br-a5-2Vh" secondAttribute="bottom" constant="8" id="sA6-4k-fK2"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -138,7 +136,7 @@
                     <navigationItem key="navigationItem" title="Messages list" id="by5-F7-2Ja">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="sF2-km-cwN">
                             <connections>
-                                <action selector="handleAddButton:" destination="BYZ-38-t0r" id="Cl3-9u-QdS"/>
+                                <action selector="handleAddButton" destination="BYZ-38-t0r" id="zXA-jP-URE"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
